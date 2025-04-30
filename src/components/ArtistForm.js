@@ -6,11 +6,14 @@ import Layout from './Layout/Layout';
 export default function ArtistForm() {
     const [formData, setFormData] = useState({
         name: '',
-        contato: ''
+        email: '',
+        disponibilidade: ''
     });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(formData);
+        console.log(e);
         
         try {
             const response = await fetch('/api/artists', {
@@ -23,7 +26,6 @@ export default function ArtistForm() {
 
             if (response.ok) {
                 alert('Artista cadastrado com sucesso!');
-                setFormData({ name: '', contato: '' });
             } else {
                 const data = await response.json();
                 alert(data.message || 'Erro ao cadastrar artista');
@@ -63,18 +65,37 @@ export default function ArtistForm() {
                 </div>
 
                 <div className="mb-6">
-                    <label htmlFor="contato" className="block text-gray-700 text-sm font-bold mb-2">
-                        Contato
+                    <label 
+                        htmlFor="email" 
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                    >
+                        email
                     </label>
                     <input
-                        type="text"
-                        id="contato"
-                        name="contato"
-                        value={formData.contato}
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
+                </div>
+                <div className="mb-6">
+                    <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+                        Disponibilidade
+                    </label>
+                    <select
+                        type="disponibilidade"
+                        htmlFor="disponibilidade"
+                        name="disponibilidade"
+                        value={formData.disponibilidade}
+                        onChange={handleChange}
+                    >
+                        <option value="1">Imediato</option>
+                        <option value="2">Próxima semana</option>
+                        <option value="3">Próximo mês</option>
+                    </select>
                 </div>
 
                 <button

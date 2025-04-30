@@ -24,8 +24,8 @@ export default function  SiderMenu() {
                 <ul className="flex flex-col gap-2 lg:gap-4 flex-1 items-justify m-5">
                     {menuItems.map((item, index) => (
                         <li key={index} className="p-1">
-                            <Link href={item.url} className="flex items-center p-1 text-white rounded hover:bg-stone-800 p-2 transition-colors">
-                                <item.icon className="w-4 h-4 lg:w-6 lg:h-6" />
+                            <Link href={item.url} className="flex flex-row items-center p-1 text-white rounded hover:bg-stone-800 p-2 transition-colors">
+                                <item.icon className="flex items-center w-4 h-4 lg:w-6 lg:h-6" />
                                 <span className="hidden lg:inline-block ml-2">
                                     {item.text}
                                 </span>

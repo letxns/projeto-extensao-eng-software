@@ -1,46 +1,72 @@
+import prisma from "@/utils/prisma";
 import { NextResponse } from "next/server";
 
-const users = []
-
 export async function GET(){
-    return NextResponse.json(users)
+    const artists = await prisma.user.findMany();
+    return NextResponse.json(artists)
 }
 
 export async function POST(request){
-    const { name } = await request.json();
-    const user = users.find((user) => user.name === name);
-
-    if(user){
-        return NextResponse.json({ message: "Artista já cadastrado"}, { status: 400 } );
+    const { name, email, disponibilidade } = await request.json();
+    if(!name || !email){
+        return NextResponse.json({ message: "Nome e email são obrigatórios"}, { status: 400 } );
     }
 
-    users.push({ id: users.length + 1, name });
-    return NextResponse.json({ message: "Artista cadastrado com sucesso" });
+    const artist = await prisma.user.findUnique({
+        where: { email },
+    })
+
+    if(artist){
+        return NextResponse.json({ message: "Artista já cadastrado"}, { status: 400 } );
+    }
+    
+    await prisma.user.create({
+        data: {
+            name,
+            email,
+            disponibilidade
+        }
+    })
+
+    return NextResponse.json({ message: "Artista cadastrado com sucesso"} );
 }
 
 export async function DELETE(request){
     const { id } = await request.json();
-    const numberId = Number(id);
-    const user = users.find((user) => user.id === numberId);
 
-    if(!user){
+    const artist = await prisma.user.findUnique({
+        where: { id },
+    })
+
+    if(!artist){
         return NextResponse.json({ message: "Artista não encontrado"}, { status: 404 } );
     }
+    
+    await prisma.user.delete({
+        where: { id },
+    })
 
-    const index = users.findIndex((user) => user.id === numberId);
-    users.splice(index, 1);
     return NextResponse.json({ message: "Artista deletado com sucesso" });
 }
 
 export async function PUT(request){
-    const { id, name } = await request.json();
-    const numberId = Number(id);
-    const user = users.find((user) => user.id === numberId);
+    const { id, name, email } = await request.json();
 
-    if(!user){
-        return NextResponse.json({ message: "Artista não encontrado"}, { status: 404 } );
+    const artist = await prisma.user.findUnique({
+        where: { id },
+    })
+
+    if(!artist){
+        return NextResponse.json({ message: "Email não pode ser vazio"}, { status: 400 } );
     }
 
-    user.name = name;
+    await prisma.user.update({
+        where: { id },
+        data: {
+            name,
+            email
+        }
+    })
+
     return NextResponse.json({ message: "Cadastro do artista atualizado com sucesso" });
 }
