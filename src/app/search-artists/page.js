@@ -25,10 +25,9 @@ export default function ArtistsList() {
 
             if (response.ok) {
                 alert('Artista excluído com sucesso!');
-                // Refresh the artists list
                 const updatedResponse = await fetch('/api/artists');
                 const updatedData = await updatedResponse.json();
-                setArtists(updatedData);
+                setArtists(updatedData.artists || []);
             } else {
                 const data = await response.json();
                 alert(data.message || 'Erro ao excluir artista');
@@ -56,7 +55,7 @@ export default function ArtistsList() {
                 alert('Artista atualizado com sucesso!');
                 const updatedResponse = await fetch('/api/artists');
                 const updatedData = await updatedResponse.json();
-                setArtists(updatedData);
+                setArtists(updatedData.artists || []);
             } else {
                 const data = await response.json();
                 alert(data.message || 'Erro ao atualizar artista');
@@ -69,40 +68,70 @@ export default function ArtistsList() {
 
     useEffect(() => {
         async function fetchArtists() {
-            const response = await fetch('/api/artists');
-            const data = await response.json();
-            console.log(data);
-            setArtists(data);
+            try {
+                const response = await fetch('/api/artists');
+                const data = await response.json();
+                setArtists(data.artists || []);
+            } catch (error) {
+                console.error('Erro ao carregar artistas:', error);
+                setArtists([]);
+            }
         }
         fetchArtists();
     }, []);
 
     return (
         <Layout>
-            <h1>Artistas</h1>
-            <ul>
-                {artists.map(artist => (
-                    <li key={artist.id} className="flex flex-row p-2">
-                        <span>
-                            {artist.name} - {artist.email} 
-                        </span>
-                        <span 
-                            className="px-1 py-1 mx-2 cursor-pointer border-2 border-solid border-blue-900 rounded hover:bg-blue-100"
-                            onClick={() => handleEdit(artist.id)}
-                        >
-                            <PencilIcon className="w-4 h-4 mx-1 lg:w-4 lg:h-4 text-blue-900  hover:text-blue-600 " />
-                        </span>
-                        <span 
-                            className="px-1 py-1 mx-2 cursor-pointer border-2 border-solid border-blue-900 rounded hover:bg-blue-100"
-                            onClick={() => handleDelete(artist.id)}
-                        >
-                            <TrashIcon className="w-4 h-4 mx-1 lg:w-4 lg:h-4 text-blue-900  hover:text-blue-600 " />
-                        </span>
-
-                    </li>
-                    // <li key={artist.id}>{artist.name} - {artist.email} - <PencilIcon className="flex items-center w-2 h-4 lg:w-6 lg:h-6" /></li>
-                ))}
-            </ul>
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-8 text-gray-800">Artistas</h1>
+                <h1 className="text-md font-bold mb-8 text-gray-800">Evento de 16/05/2025</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {artists && artists.length > 0 ? (
+                        artists.map(artist => (
+                            <div key={artist.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                                <div className="flex flex-col space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h2 className="text-xl font-semibold text-gray-800">{artist.name}</h2>
+                                        <div className="flex space-x-2">
+                                            <button
+                                                onClick={() => handleEdit(artist.id)}
+                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                                                title="Editar"
+                                            >
+                                                <PencilIcon className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(artist.id)}
+                                                className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                                                title="Excluir"
+                                            >
+                                                <TrashIcon className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="text-gray-600">
+                                        <p className="flex items-center">
+                                            <span className="font-medium">Email:</span>
+                                            <span className="ml-2">{artist.email}</span>
+                                        </p>
+                                        <p className="flex items-center mt-2">
+                                            <span className="font-medium">Disponibilidade:</span>
+                                            <span className="ml-2">
+                                                {artist.disponibilidade === "1" ? 'Sim' : 
+                                                 artist.disponibilidade === "2" ? 'Não' :  'A confirmar'}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center text-gray-500">
+                            Nenhum artista encontrado
+                        </div>
+                    )}
+                </div>
+            </div>
         </Layout>
     );
 }

@@ -7,7 +7,7 @@ export default function ArtistForm() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        disponibilidade: ''
+        disponibilidade: '3'
     });
 
     const handleSubmit = async (e) => {
@@ -69,7 +69,7 @@ export default function ArtistForm() {
                         htmlFor="email" 
                         className="block text-gray-700 text-sm font-bold mb-2"
                     >
-                        email
+                        Email
                     </label>
                     <input
                         type="email"
@@ -91,10 +91,11 @@ export default function ArtistForm() {
                         name="disponibilidade"
                         value={formData.disponibilidade}
                         onChange={handleChange}
+                        required
                     >
-                        <option value="1">Imediato</option>
-                        <option value="2">Próxima semana</option>
-                        <option value="3">Próximo mês</option>
+                        <option value="1">Sim</option>
+                        <option value="2">Não</option>
+                        <option value="3" defaultValue>A confirmar</option>
                     </select>
                 </div>
 

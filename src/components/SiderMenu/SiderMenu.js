@@ -18,7 +18,7 @@ export default function  SiderMenu() {
                 <div className="m-2 p-2 border-b-2 border-solid border-white">
                     <Link id="sidebar-logo" href="/" className="flex items-center text-white">
                         <CubeIcon className="w-6 h-6" />
-                        <span className="hidden lg:inline-block ml-2">app logo</span>
+                        <span className="hidden lg:inline-block ml-2">Gerenciar eventos</span>
                     </Link>
                 </div>
                 <ul className="flex flex-col gap-2 lg:gap-4 flex-1 items-justify m-5">
